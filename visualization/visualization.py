@@ -5,9 +5,8 @@ from mpl_toolkits.mplot3d import Axes3D
 
 import utils
 
-def plot_3d_line(ids, joints):
+def single_person_plot(ids, joints):
     part = utils.make_part_dict()
-
     for i in range(len(ids)):
         globals()['fig%s' %i] = plt.figure()
         ax = plt.axes(projection='3d')
@@ -22,7 +21,7 @@ def main():
     file_name = 'body3DScene_00000100.json'
     path = '../Dataset/Dome_3D/190503_imu5/op25_body3DPSRecon_json_normCoord/0140'
     ids, joints = utils.open_json_file(os.path.join(path, file_name))
-    plot_3d_line(ids, joints)
+    single_person_plot(ids, joints)
     plt.show()
 
 if __name__ == '__main__':
