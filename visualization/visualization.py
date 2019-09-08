@@ -33,11 +33,11 @@ def multi_people_plot(ids, joints):
     return 0
 
 def main():
-    file_name = 'body3DScene_00000100.json'
+    file_name = 'body3DScene_00001000.json'
     path = '../Dataset/Dome_3D/190503_imu5/op25_body3DPSRecon_json_normCoord/0140'
     ids, joints = utils.open_json_file(os.path.join(path, file_name))
     multi_people_plot(ids, joints)
-    # single_person_plot(ids, joints)
+    single_person_plot(ids, joints)
     plt.show()
 
 if __name__ == '__main__':

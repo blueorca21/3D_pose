@@ -47,7 +47,7 @@ def set_range(x, y, z, ax):
     x = np.array(tmp_x)
     y = np.array(tmp_y)
     z = np.array(tmp_z)
-    max_range = np.array([x.max()-x.min(), y.max()-y.min(), z.max()-z.min()]).max() / 2.0
+    max_range = 1.1 * np.array([x.max()-x.min(), y.max()-y.min(), z.max()-z.min()]).max() / 2.0
     mid_x = (x.max() + x.min())/2.0
     mid_y = (y.max() + y.min())/2.0
     mid_z = (z.max() + z.min())/2.0
