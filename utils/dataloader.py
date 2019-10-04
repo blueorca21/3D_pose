@@ -43,16 +43,36 @@ def imu_loader(file_name):
     return data
     
 
-def check_new_id(org, new):
+def check_new_id(org, new, joints):
     if len(org) == 0:
-        for i in new:
-            if i != 0 and i !=1:
-                new.remove(i)
+        # First frame, nobody detected = discard this frame
+        if new == []:
+            return [], []
+        
+        # First frame, only one detected decide by the position
+        elif len(new) == 1:
+            if joints[0][0][0] > 0:
+                return [1, 0], new
+            else:
+                return [0, 1], new
+        # First frame but more than 2 are detected
+        else:
+            for i in new:
+                if i != 0 and i !=1:
+                    new.remove(i)
+        # First frame, two are detected but wrong order
+        if joints[0][0][0] < joints[1][0][0]:
+            tmp = [new[1], new[0]]
+            return tmp, new
+        
+        # First frame good
         return new, new
     
-    if len(new) > len(org):
+    # Longer than first frame, more than two are detected
+    if len(new) > 2:
         return org, []
     
+    # new id comes detected
     for i in org:
         if new.count(i) == 0:
             only_org = i
@@ -65,6 +85,7 @@ def check_new_id(org, new):
         org[org.index(only_org)] = only_new
     except:
         pass
+    
     return org, []
 
 def kp_loader(path, start, end, all_files=False):
@@ -85,10 +106,20 @@ def kp_loader(path, start, end, all_files=False):
             name = '0' + name
         file_name = file_name_default + name + '.json'
         tmp_ids, tmp_joints = open_json_file(os.path.join(path, file_name))
-        ids, new_index = check_new_id(ids, tmp_ids)
+        ids, new_index = check_new_id(ids, tmp_ids, tmp_joints)
         for idx in ids:
-            if ids == new_index:
-                joints.append(tmp_joints[ids.index(idx)].reshape(-1,26,4))
+            if len(joints) < 2:
+                if ids == new_index and len(new_index) != 0:
+                    joints.append(tmp_joints[ids.index(idx)].reshape(-1,26,4))
+                elif len(ids) == len(new_index):
+                    joints.append(tmp_joints[new_index.index(idx)].reshape(-1,26,4))
+                elif len(new_index) == 0:
+                    pass
+                else:
+                    if new_index.count(idx) == 0:
+                        joints.append(np.zeros([1,26,4]))
+                    else:
+                        joints.append(tmp_joints[0].reshape(-1,26,4))
             else:
                 if tmp_ids.count(idx) != 0:
                     joints[ids.index(idx)] = np.vstack([

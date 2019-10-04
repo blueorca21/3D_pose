@@ -84,7 +84,7 @@ def main():
     folders.sort()
     path += '/'+folders[sequence_id] + '/op25_body3DPSRecon_json_normCoord/0140/'
     #Video generation
-    animation(path, '00000100', '00000101', all_files=False)
+    animation(path, '00000100', '00000300', all_files=False)
     
 
 if __name__ == '__main__':
